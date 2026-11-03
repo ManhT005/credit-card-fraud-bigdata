@@ -218,3 +218,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local project data and generated artifacts
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/benchmark/*
+!data/benchmark/.gitkeep
+artifacts/*
+!artifacts/.gitkeep
+*.parquet
+*.joblib
+*.pkl
+spark-warehouse/
+metastore_db/
+*.crc
