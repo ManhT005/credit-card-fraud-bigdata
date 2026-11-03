@@ -1,10 +1,8 @@
 # Notebooks
 
-Planned analyses:
+1. `01_data_profiling.ipynb` — **implemented Phase 1**: schema, provenance, missingness, class imbalance, descriptive statistics, PCA display, leakage risks.
+2. `02_model_baselines.ipynb` — planned.
+3. `03_threshold_analysis.ipynb` — planned.
+4. `04_spark_benchmark.ipynb` — planned.
 
-1. `01_data_profiling.ipynb` — schema, class balance and EDA.
-2. `02_model_baselines.ipynb` — supervised and anomaly-detection comparisons.
-3. `03_threshold_analysis.ipynb` — precision/recall trade-offs.
-4. `04_spark_benchmark.ipynb` — equivalent pandas and PySpark ETL.
-
-Keep reusable functions in `src/fraud_detection/`, not copied across notebooks.
+Phase 1: install `.[data,ml,dev]`, place CSV at `data/raw/creditcard.csv`, launch Jupyter **from repository root**. Notebook uses reusable functions in `src/fraud_detection/ingestion/profiling.py` and has no saved outputs. It does not train or resample. See `docs/phase_01_tasks.md`.
