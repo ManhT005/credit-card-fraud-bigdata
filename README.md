@@ -2,7 +2,7 @@
 
 Reproducible research scaffold for **Apache Spark, imbalanced machine learning, and fraud risk analytics**.
 
-**Current status:** Project structure only. No trained models or measured benchmark results.
+**Current status:** Project skeleton plus Phase 1 read-only profiling, EDA notebook and synthetic tests. No trained models or measured benchmark results.
 
 ## Objectives
 
@@ -56,7 +56,7 @@ with the chosen Spark version.
 ```bash
 git clone https://github.com/ManhT005/credit-card-fraud-bigdata.git
 cd credit-card-fraud-bigdata
-git switch chore/project-skeleton
+git switch develop
 
 python -m venv .venv
 # Windows Git Bash: source .venv/Scripts/activate
@@ -77,7 +77,7 @@ streamlit run dashboard/app.py
 ```
 
 The dashboard is deliberately a placeholder, not a trained fraud classifier.
-Docker Compose and data ingestion will be implemented in later phases.
+Docker Compose and production ingestion are planned for later phases. Phase 1 local CSV profiling is implemented.
 
 ## Research safeguards
 
@@ -97,10 +97,26 @@ Read [experiment protocol](docs/experiment_protocol.md) and
 | Phase | Goal | Status |
 | --- | --- | --- |
 | 0 | Skeleton, package, smoke tests | Scaffold |
-| 1 | OpenML ingestion and EDA | Planned |
+| 1 | Local OpenML CSV profiling and exploratory notebook | Implemented (original-data validation pending) |
 | 2 | ML baselines and evaluation | Planned |
 | 3 | Spark ETL and performance study | Planned |
 | 4 | Streamlit demo and final report | Planned |
+
+## Phase 1: Data profiling and notebook
+
+Download the original dataset from [OpenML 1597](https://www.openml.org/d/1597) and place `creditcard.csv` in `data/raw/` locally (ignored by Git).
+
+```bash
+python -m pip install -e ".[data,ml,dev]"
+fraud-bigdata profile --input data/raw/creditcard.csv --output artifacts/phase_01
+python -m pytest -q
+python -m ruff check src tests scripts dashboard
+jupyter notebook notebooks/01_data_profiling.ipynb
+```
+
+Optional Spark smoke check: install `.[spark]`, then run `python scripts/spark_inspection.py`. It is not a performance benchmark.
+
+Read the [Phase 1 team task plan](docs/phase_01_tasks.md) and [data card](docs/phase_01_data_card.md). The local dataset must be executed before any actual findings or Phase 1 acceptance are claimed.
 
 ## License
 
