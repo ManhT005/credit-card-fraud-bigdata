@@ -1,9 +1,8 @@
 """Ensure the intended research directories exist."""
 
-import pathlib
+from pathlib import Path
 
-
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_directories():
