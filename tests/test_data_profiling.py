@@ -57,6 +57,8 @@ def test_invalid_schema_rejected():
 )
 def test_invalid_values_reported(column, value, code):
     df = sample_frame()
+    if isinstance(value, str):
+        df[column] = df[column].astype(object)
     df.loc[0, column] = value
     report = profile_dataframe(df, check_reference=False)
     assert not report["valid"]
