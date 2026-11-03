@@ -124,7 +124,7 @@ def profile_dataframe(df: pd.DataFrame, *, check_reference: bool = True) -> dict
             "names": list(EXPECTED_COLUMNS),
             "dtypes": {c: str(df[c].dtype) for c in EXPECTED_COLUMNS},
         },
-        "rows": int(len(df)),
+        "rows": len(df),
         "null_count": missing,
         "non_numeric_count": non_numeric,
         "non_finite_count": non_finite,
