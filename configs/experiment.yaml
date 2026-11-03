@@ -1,0 +1,21 @@
+# Planned protocol; values below are not model results.
+seed: 42
+primary_split:
+  strategy: chronological
+  train_fraction: 0.70
+  validation_fraction: 0.15
+  test_fraction: 0.15
+reference_split:
+  strategy: stratified_random
+  test_fraction: 0.20
+resampling:
+  smote: train_only
+threshold_selection:
+  dataset: validation_only
+  objective: f2
+evaluation:
+  primary: average_precision
+  additional: [precision, recall, f1, f2, roc_auc, confusion_matrix, precision_at_k]
+benchmark:
+  scales: [1, 10, 100]
+  replicated_data_purpose: etl_only

@@ -1,0 +1,16 @@
+# Source metadata; no credentials or downloaded datasets are committed.
+source:
+  provider: openml
+  dataset_id: 1597
+  url: https://www.openml.org/d/1597
+  target: Class
+  time_column: Time
+  amount_column: Amount
+  expected_original_rows: 284807
+  expected_positive_rows: 492
+
+storage:
+  raw: data/raw
+  processed: data/processed
+  benchmark: data/benchmark
+  preferred_format: parquet
