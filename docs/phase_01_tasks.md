@@ -1,7 +1,7 @@
 # Phase 1 — Data acquisition and profiling
 
 **Branch:** feature/phase-01-data-profiling, based on develop.
-**Status:** source implementation delivered; original-CSV execution and acceptance pending.
+**Status:** implementation with automated original-source acceptance; use the CI result and evidence for the reviewed revision.
 
 ## Responsibilities (5-person team)
 
@@ -16,9 +16,9 @@
 ## How to run
 
 1. Download OpenML 1597 original `creditcard.csv`, place at `data/raw/creditcard.csv`. Never commit source transactions.
-2. `python -m pip install -e ".[data,ml,dev]"`
+2. `python -m pip install -e ".[data,notebook,dev]"`
 3. `fraud-bigdata profile --input data/raw/creditcard.csv --output artifacts/phase_01`
-4. Run `notebooks/01_data_profiling.ipynb` from repository root.
+4. Run `notebooks/01_data_profiling.ipynb` from repository root or `notebooks/`. Or run `python scripts/phase_01_acceptance.py` to download the pinned source and execute all notebook cells automatically.
 5. `python -m pytest -q`; `python -m ruff check src tests scripts dashboard`.
 6. Optional: install `.[spark]`, run `python scripts/spark_inspection.py` (not a benchmark).
 

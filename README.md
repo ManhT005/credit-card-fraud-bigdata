@@ -107,7 +107,7 @@ Read [experiment protocol](docs/experiment_protocol.md) and
 Download the original dataset from [OpenML 1597](https://www.openml.org/d/1597) and place `creditcard.csv` in `data/raw/` locally (ignored by Git).
 
 ```bash
-python -m pip install -e ".[data,ml,dev]"
+python -m pip install -e ".[data,notebook,dev]"
 fraud-bigdata profile --input data/raw/creditcard.csv --output artifacts/phase_01
 python -m pytest -q
 python -m ruff check src tests scripts dashboard
@@ -116,7 +116,7 @@ jupyter notebook notebooks/01_data_profiling.ipynb
 
 Optional Spark smoke check: install `.[spark]`, then run `python scripts/spark_inspection.py`. It is not a performance benchmark.
 
-Read the [Phase 1 team task plan](docs/phase_01_tasks.md) and [data card](docs/phase_01_data_card.md). The local dataset must be executed before any actual findings or Phase 1 acceptance are claimed.
+Read the [Phase 1 team task plan](docs/phase_01_tasks.md) and [data card](docs/phase_01_data_card.md). Run `python scripts/phase_01_acceptance.py` to download and verify the pinned original ARFF, export all 31 columns to local CSV, and execute the notebook from `notebooks/`. The `phase-1-acceptance` CI job publishes aggregate evidence; acceptance requires this job and tests to pass on the PR revision. See the data card for the source-declared `Public` license limitation.
 
 ## License
 
