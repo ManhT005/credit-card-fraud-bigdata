@@ -1,7 +1,7 @@
 """Offline notebook regression; original-source acceptance is a separate hosted job."""
 
-import json
 import importlib.util
+import json
 import shutil
 from pathlib import Path
 
