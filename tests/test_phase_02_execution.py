@@ -1,6 +1,7 @@
 """Offline notebook regression; original-source acceptance is a separate hosted job."""
 
 import json
+import importlib.util
 import shutil
 from pathlib import Path
 
@@ -76,3 +77,14 @@ def test_aggregate_artifacts_have_no_test_metrics(synthetic_notebook_root):
     assert result["test_opened"] is False
     assert all(run["evaluation_source"] == "validation" for run in result["runs"])
     assert all("test_metrics" not in run and "predictions" not in run for run in result["runs"])
+
+
+def test_acceptance_saves_notebook_in_a_clean_output_directory(tmp_path):
+    path = ROOT / "scripts/phase_02_acceptance.py"
+    spec = importlib.util.spec_from_file_location("phase_02_acceptance", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    document = nbformat.v4.new_notebook(cells=[nbformat.v4.new_markdown_cell("Aggregate evidence")])
+    destination = tmp_path / "missing/phase_02/notebooks/executed.ipynb"
+    module.save_executed_notebook(document, destination)
+    assert nbformat.read(destination, as_version=4).cells[0].source == "Aggregate evidence"

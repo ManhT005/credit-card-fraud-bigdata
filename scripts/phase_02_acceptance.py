@@ -14,6 +14,12 @@ from fraud_detection.preprocessing.manifest import write_json
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def save_executed_notebook(document, destination: Path) -> None:
+    """Support a clean checkout where the artifact directory does not exist yet."""
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    nbformat.write(document, destination)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--download-source", action="store_true",
@@ -45,7 +51,7 @@ def main() -> None:
                 NotebookClient(document, timeout=600, kernel_name="python3",
                     resources={"metadata": {"path": str(directory)}}).execute()
                 name = notebook.stem + (".from-root" if directory == ROOT else ".from-notebooks")
-                nbformat.write(document, output / "notebooks" / (name + ".ipynb"))
+                save_executed_notebook(document, output / "notebooks" / (name + ".ipynb"))
                 notebooks.append(name)
         if len(notebooks) != 8:
             raise ValueError("Expected four Phase 2 notebooks in both working directories")

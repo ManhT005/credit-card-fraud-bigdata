@@ -63,7 +63,7 @@ The reference protocol keeps duplicate groups together; its row proportions are 
 
 ## Validation and closure status
 
-- 45 non-kernel tests passed locally; Ruff and git diff whitespace checks passed.
+- 46 non-kernel tests passed locally; Ruff and git diff whitespace checks passed.
 - Four kernel test cases remain required in hosted CI. A local P1 kernel test fails because this environment prohibits socket binding (Operation not permitted), not because the data or notebook path contract passed kernel execution.
 - Original-source modeling completed for 11 candidates in each of two protocols. No synthetic repetitions were used for empirical ML results.
 - All four P2 notebooks are tested using original-data aggregate artifacts from root and notebooks/ via in-process IPython; saved local outputs identify that executor explicitly. Hosted CI executes real Jupyter kernels in both directories.
