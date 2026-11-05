@@ -1,10 +1,14 @@
-# Notebooks
+# Research notebooks
 
-1. `01_data_profiling.ipynb` — **implemented Phase 1**: schema, provenance, missingness, class imbalance, descriptive statistics, PCA display, leakage risks.
-2. `02_model_baselines.ipynb` — planned.
-3. `03_threshold_analysis.ipynb` — planned.
-4. `04_spark_benchmark.ipynb` — planned.
+| Notebook | Scope |
+|---|---|
+| 01_data_profiling.ipynb | P1 source profiling and descriptive EDA |
+| 02_split_and_leakage_audit.ipynb | P2 source/split SHA, coverage, Time groups, duplicate audit |
+| 03_baseline_models.ipynb | P2 Dummy/logistic/balanced logistic, validation PR/ROC |
+| 04_imbalance_experiments.ipynb | P2 SMOTE, six weighted XGB settings, IsolationForest; separate reference |
+| 05_threshold_and_errors.ipynb | P2 validation F2 policy, alert volume, aggregate Amount/Time error slices |
+| 06_spark_benchmark.ipynb | Planned P3; not implemented in Phase 2 |
 
-Phase 1: install `.[data,notebook,dev]`, place CSV at `data/raw/creditcard.csv`, launch Jupyter from repository root or `notebooks/`. Notebook uses reusable functions in `src/fraud_detection/ingestion/profiling.py` and has no saved outputs. It does not train or resample. See `docs/phase_01_tasks.md`.
+Install `.[data,ml,notebook,dev]`. Run Phase 1 acceptance, then `python scripts/phase_02_acceptance.py --execute-notebooks`. P2 notebooks read source/config/code-verified aggregate experiment artifacts; reusable fitting, splitting and evaluation live in src/fraud_detection. Missing or stale evidence fails rather than silently using a different run. Notebook kernels can start in repo root or notebooks/; paths resolve through find_project_root.
 
-The notebook resolves repository paths automatically from both the repository root and `notebooks/`. For original-data verification and a saved executed notebook, run `python scripts/phase_01_acceptance.py`.
+Notebook outputs are not committed; CI saves executed copies in its aggregate artifact. No raw row previews, row-level predictions, invented metric values or test performance are included. Four P2 notebooks replace the old planned names to avoid duplicate functions; Spark stays Phase 3.

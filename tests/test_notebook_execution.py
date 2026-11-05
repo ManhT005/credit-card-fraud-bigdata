@@ -14,6 +14,7 @@ from fraud_detection.paths import find_project_root
 ROOT = Path(__file__).resolve().parents[1]
 
 
+@pytest.mark.notebook
 @pytest.mark.parametrize("directory", [".", "notebooks"])
 def test_notebook_executes_from_supported_directories(tmp_path, monkeypatch, directory):
     monkeypatch.setenv("MPLBACKEND", "Agg")

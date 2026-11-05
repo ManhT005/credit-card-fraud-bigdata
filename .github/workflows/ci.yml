@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install project with data and test tools
-        run: python -m pip install -e ".[data,notebook,dev]"
+        run: python -m pip install -e ".[data,ml,notebook,dev]"
       - name: Test
         run: python -m pytest -q
       - name: Lint
@@ -43,5 +43,48 @@ jobs:
         with:
           name: phase-1-acceptance
           path: artifacts/phase_01/
+          if-no-files-found: error
+          retention-days: 30
+
+  phase-2-acceptance:
+    needs: phase-1-acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install reproducible experiment environment
+        run: python -m pip install -e ".[data,ml,notebook,dev]"
+      - name: Receive successful source evidence from this workflow
+        uses: actions/download-artifact@v4
+        with:
+          name: phase-1-acceptance
+          path: artifacts/phase_01
+      - name: Original-source modeling and notebook acceptance
+        env:
+          MPLBACKEND: Agg
+          OMP_NUM_THREADS: "2"
+          OPENBLAS_NUM_THREADS: "2"
+        run: python scripts/phase_02_acceptance.py --download-source --execute-notebooks
+      - name: Save aggregate Phase 2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-2-acceptance
+          path: |
+            artifacts/phase_02/acceptance.json
+            artifacts/phase_02/dataset_intake.json
+            artifacts/phase_02/split_manifest.json
+            artifacts/phase_02/reference_split_manifest.json
+            artifacts/phase_02/experiment.json
+            artifacts/phase_02/candidate_proposal.json
+            artifacts/phase_02/model_comparison.csv
+            artifacts/phase_02/runs/*/*.json
+            artifacts/phase_02/reference/*.json
+            artifacts/phase_02/reference/model_comparison.csv
+            artifacts/phase_02/reference/runs/*/*.json
+            artifacts/phase_02/notebooks/*.ipynb
           if-no-files-found: error
           retention-days: 30

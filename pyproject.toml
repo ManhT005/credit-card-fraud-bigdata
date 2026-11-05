@@ -27,6 +27,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["notebook: launches a real Jupyter kernel; requires local socket support"]
 
 [tool.ruff]
 line-length = 100
