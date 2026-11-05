@@ -58,6 +58,8 @@ def test_all_phase2_notebooks_execute_without_raw_output(synthetic_notebook_root
         NotebookClient(notebook, timeout=120, kernel_name="python3",
                         resources={"metadata": {"path": str(root / directory)}}).execute()
         assert all(c.execution_count is not None for c in notebook.cells if c.cell_type == "code")
+        assert any("image/png" in item.get("data", {})
+                   for cell in notebook.cells for item in cell.get("outputs", []))
         for cell in notebook.cells:
             assert "df.head(" not in cell.source and "test_metrics" not in cell.source
 

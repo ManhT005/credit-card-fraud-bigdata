@@ -50,6 +50,9 @@ def main() -> None:
                 document = nbformat.read(notebook, as_version=4)
                 NotebookClient(document, timeout=600, kernel_name="python3",
                     resources={"metadata": {"path": str(directory)}}).execute()
+                if not any("image/png" in item.get("data", {})
+                           for cell in document.cells for item in cell.get("outputs", [])):
+                    raise ValueError(f"Notebook has no rendered chart: {notebook.name}")
                 name = notebook.stem + (".from-root" if directory == ROOT else ".from-notebooks")
                 save_executed_notebook(document, output / "notebooks" / (name + ".ipynb"))
                 notebooks.append(name)
