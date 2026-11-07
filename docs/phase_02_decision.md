@@ -1,16 +1,25 @@
-# Phase 2 candidate decision — review pending
+# Phase 2 candidate decision
 
-The implementation proposes a candidate from primary validation AP/F2 only. See phase_02_results.md for measured results and artifacts/phase_02/candidate_proposal.json for the exact decision SHA, fitted model SHA, split SHA and operating point.
+## Proposal for independent review
 
-## Required independent sign-off
+- Candidate: `xgboost_06`
+- Run ID: `chronological-xgboost_06-1f4d95e0f797`
+- Decision SHA-256: `1602082a03abe686b8c828bc3bbac9711163461fcec65e459f51e6da4dafe00a`
+- Fitted model SHA-256: `94dfe90f1c08d1e0933d6c5366c897c8b3a5e0d5c2e6778272ef2982df83c31f`
+- Primary split SHA-256: `25d7a9daf496855757b2c1b8e05bbe26f015c8aac43758cee25e4f56c168a690`
+- Selection: highest chronological validation AP, then F2, then model name. The reference protocol does not influence selection.
+- Operating point: threshold `0.08604497462511063`, validation AP 0.839861, F2 0.809859, 14 false alerts and 10 missed fraud cases.
+- Evidence: [locked GitHub Actions run 42364868665](https://github.com/ManhT005/credit-card-fraud-bigdata/actions/runs/42364868665), artifact `13570879627`. See [the results report](phase_02_results.md) for its verified digest and complete comparison.
 
-| Reviewer | Decision hash reviewed | Decision |
-|---|---|---|
-| Source/split reviewer (N2) | Pending | Pending |
-| Model/evaluation reviewer (N3/N4; different person) | Pending | Pending |
+## Required independent sign-offs
 
-No reviewer identity, gold label, approval or signature is fabricated. The local/CI script never changes this table and always keeps the proposal pending. The held-out test remains sealed. There is no final test score and no production-readiness claim.
+| Role | GitHub reviewer | Decision SHA-256 reviewed | Review |
+|---|---|---|---|
+| Source/split (N2) | Pending | Pending | Pending |
+| Model/evaluation (N3 or N4) | Pending | Pending | Pending |
 
-Review source provenance and Public-license limitations, duplicate/feature-conflict audit, Time drift, train-only fit evidence, SMOTE class counts, validation AP and false-alert trade-offs, stable-tie top-K limitation, bounded-search selection bias, independent-reference differences, notebook execution and the hosted CI run at the PR head. Capture the exact candidate decision hash in both reviews before freezing a research champion. Do not reinterpret a later rerun as approval of a different hash.
+The two reviewers must be distinct and independent of the change owner. Each records their approval of the exact decision SHA-256 above on [PR #3](https://github.com/ManhT005/credit-card-fraud-bigdata/pull/3). The source/split review covers source provenance, license metadata, duplicate isolation, class prevalence and Time drift. The model/evaluation review covers train-only preprocessing and SMOTE, validation-only AP/F2, the alert trade-off, reference protocol separation, notebook evidence and bounded-search limitations.
 
-P3/P4 backlog: Spark scale benchmarks; persistence/serving of reviewed models; formal test-opening protocol after a reviewed candidate freeze; external/longitudinal data; operational cost assumptions and calibration; final demo/report. Replicated data is never independent ML evidence.
+Freeze the candidate after both approvals and a successful full CI run on the final PR head. Verify that its artifact reproduces the decision SHA-256 above. If the hash changes, require both reviewers to review the new proposal. The automated evidence records technical completion separately from human sign-off. The held-out test remains sealed.
+
+P3/P4 backlog: Spark scale benchmarks, persistence and serving of reviewed models, formal test-opening protocol after candidate freeze, external or longitudinal data, operational cost assumptions and calibration, and the final demo and report. Replicated data is for ETL benchmarking.
