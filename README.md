@@ -124,8 +124,13 @@ See [LICENSE](LICENSE).
 
 ## Phase 2: Leakage-safe modeling and evaluation
 
+Use Ubuntu 26.04 x86_64 and CPython 3.11.18 in a fresh virtual environment for parity with CI. The generic setup above is for development. For comparable Phase 2 results, use the locked environment below.
+
 ```bash
-python -m pip install -e ".[data,ml,notebook,dev]"
+python -m pip install -r requirements/phase-02-linux-py311.txt
+python -m pip install --no-build-isolation --no-deps -e ".[data,ml,notebook,dev]"
+python -m pip check
+export MPLBACKEND=Agg OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
 python scripts/phase_01_acceptance.py
 python scripts/phase_02_acceptance.py --execute-notebooks
 python -m pytest -q

@@ -7,31 +7,37 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.11.18"
       - name: Install project with data and test tools
-        run: python -m pip install -e ".[data,ml,notebook,dev]"
+        run: |
+          python -m pip install -r requirements/phase-02-linux-py311.txt
+          python -m pip install --no-build-isolation --no-deps -e ".[data,ml,notebook,dev]"
+          python -m pip check
       - name: Test
         run: python -m pytest -q
       - name: Lint
         run: python -m ruff check src tests dashboard scripts
 
   phase-1-acceptance:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.11.18"
       - name: Install data and notebook environment
-        run: python -m pip install -e ".[data,notebook,dev]"
+        run: |
+          python -m pip install -r requirements/phase-02-linux-py311.txt
+          python -m pip install --no-build-isolation --no-deps -e ".[data,ml,notebook,dev]"
+          python -m pip check
       - name: Verify OpenML source and execute original-data notebook
         env:
           MPLBACKEND: Agg
@@ -48,15 +54,18 @@ jobs:
 
   phase-2-acceptance:
     needs: phase-1-acceptance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.11.18"
       - name: Install reproducible experiment environment
-        run: python -m pip install -e ".[data,ml,notebook,dev]"
+        run: |
+          python -m pip install -r requirements/phase-02-linux-py311.txt
+          python -m pip install --no-build-isolation --no-deps -e ".[data,ml,notebook,dev]"
+          python -m pip check
       - name: Receive successful source evidence from this workflow
         uses: actions/download-artifact@v4
         with:
@@ -67,7 +76,11 @@ jobs:
           MPLBACKEND: Agg
           OMP_NUM_THREADS: "2"
           OPENBLAS_NUM_THREADS: "2"
-        run: python scripts/phase_02_acceptance.py --download-source --execute-notebooks
+        run: |
+          python scripts/phase_02_acceptance.py --download-source
+          cp artifacts/phase_02/candidate_proposal.json "$RUNNER_TEMP/phase-02-first-proposal.json"
+          python scripts/phase_02_acceptance.py --execute-notebooks
+          cmp "$RUNNER_TEMP/phase-02-first-proposal.json" artifacts/phase_02/candidate_proposal.json
       - name: Save aggregate Phase 2 evidence
         if: always()
         uses: actions/upload-artifact@v4
