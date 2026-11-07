@@ -2,7 +2,7 @@
 
 Reproducible research scaffold for **Apache Spark, imbalanced machine learning, and fraud risk analytics**.
 
-**Current status:** Project skeleton plus Phase 1 read-only profiling, EDA notebook and synthetic tests. No trained models or measured benchmark results.
+**Current status:** Phase 1 verified-source tooling plus Phase 2 leakage-safe modeling/evaluation. Validation results and proposal require hosted CI and independent peer review; held-out test remains sealed. No Spark benchmark results.
 
 ## Objectives
 
@@ -42,7 +42,7 @@ Do not commit raw transactions or replicated benchmark data.
 │   └── cli.py
 ├── dashboard/                  # Streamlit placeholder
 ├── infra/docker/               # Planned Spark cluster
-├── scripts/                    # Repeatable entrypoints (planned)
+├── scripts/                    # Repeatable acceptance entrypoints
 ├── artifacts/                  # Local results, ignored
 ├── reports/                    # Research deliverables
 └── tests/
@@ -63,12 +63,12 @@ python -m venv .venv
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 # Linux/macOS: source .venv/bin/activate
 
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[data,ml,notebook,dev]"
 fraud-bigdata info
 python -m pytest -q
 ```
 
-Optional packages for future phases:
+Optional packages for Spark and the dashboard:
 
 ```bash
 python -m pip install -e ".[data,ml,spark,dev]"
@@ -97,8 +97,8 @@ Read [experiment protocol](docs/experiment_protocol.md) and
 | Phase | Goal | Status |
 | --- | --- | --- |
 | 0 | Skeleton, package, smoke tests | Scaffold |
-| 1 | Local OpenML CSV profiling and exploratory notebook | Implemented (original-data validation pending) |
-| 2 | ML baselines and evaluation | Planned |
+| 1 | Local OpenML CSV profiling and exploratory notebook | Implemented; verified-source acceptance job retained |
+| 2 | ML baselines and evaluation | Implemented; research sign-off pending |
 | 3 | Spark ETL and performance study | Planned |
 | 4 | Streamlit demo and final report | Planned |
 
@@ -121,3 +121,24 @@ Read the [Phase 1 team task plan](docs/phase_01_tasks.md) and [data card](docs/p
 ## License
 
 See [LICENSE](LICENSE).
+
+## Phase 2: Leakage-safe modeling and evaluation
+
+Use Ubuntu 26.04 x86_64 and CPython 3.11.18 in a fresh virtual environment for parity with CI. The generic setup above is for development. For comparable Phase 2 results, use the locked environment below.
+
+```bash
+python -m pip install -r requirements/phase-02-linux-py311.txt
+python -m pip install --no-build-isolation --no-deps -e ".[data,ml,notebook,dev]"
+python -m pip check
+export MPLBACKEND=Agg OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+python scripts/phase_01_acceptance.py
+python scripts/phase_02_acceptance.py --execute-notebooks
+python -m pytest -q
+python -m ruff check src tests scripts dashboard
+```
+
+The verified original CSV is required. Primary Time-group split (70/15/15) and independent grouped-stratified reference (approximately 60/20/20) retain all rows and block cross-split duplicates. The pipeline trains Dummy prior, logistic, balanced logistic, train-only SMOTE logistic, six weighted XGBoost candidates and Isolation Forest per protocol. Selection uses validation AP; each threshold uses validation F2. Test remains sealed.
+
+Read the [protocol](docs/phase_02_protocol.md), [measured validation results](docs/phase_02_results.md), and [review gate](docs/phase_02_decision.md). Technical CI success does not approve a research champion. Artifacts contain aggregate evidence and no raw transactions, per-row predictions or model binaries.
+
+Kernel execution requires local socket support. In restricted environments, `pytest -m "not notebook"` runs the non-kernel contracts only; it is not full acceptance. Hosted CI runs all tests and original-data notebooks.
