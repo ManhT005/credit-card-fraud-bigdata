@@ -60,3 +60,5 @@ measurements only. Use [Docker Compose](../infra/docker/README.md) for the
 single-host standalone configuration. CI runs the original 1× workload in
 both modes and uploads aggregate JSON only. Run all scales on the same
 dedicated machine before comparing the full scale curve.
+
+See [measured results and evidence](phase_03_results.md) for the initial verified runs.
