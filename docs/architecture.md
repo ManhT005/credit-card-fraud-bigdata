@@ -24,7 +24,8 @@ Split -> Preprocessing -> Feature engineering
 - `features`: deterministic feature engineering.
 - `models`: classification and anomaly-detection baselines.
 - `evaluation`: PR analysis, fraud-alert thresholds and error diagnostics.
-- `benchmarks`: ETL scaling, elapsed time and memory comparisons.
+- `fraud_benchmarks`: ETL scaling, elapsed time and memory comparisons. Its separate
+  package keeps benchmark changes outside the Phase 2 implementation fingerprint.
 - `pipelines`: commands shared by scripts and notebooks.
 
 ## Spark deployment stages
@@ -37,4 +38,4 @@ The original ~285k-row dataset does not itself require a distributed cluster.
 Measure performance rather than presuming Spark is faster. Multiple Docker
 workers on one laptop are not a true multi-node hardware benchmark.
 
-**Note:** Docker deployment is not implemented in the skeleton commit.
+See [the standalone Compose setup](../infra/docker/README.md) for local deployment.
