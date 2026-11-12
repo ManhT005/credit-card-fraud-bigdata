@@ -40,7 +40,7 @@ Do not commit raw transactions or replicated benchmark data.
 │   ├── pipelines/              # End-to-end orchestration
 │   └── cli.py
 ├── src/fraud_benchmarks/        # pandas versus Spark
-├── dashboard/                  # Streamlit placeholder
+├── dashboard/                  # Streamlit research dashboard
 ├── infra/docker/               # Spark standalone cluster
 ├── scripts/                    # Repeatable acceptance entrypoints
 ├── artifacts/                  # Local results, ignored
@@ -76,7 +76,7 @@ python -m pip install -e ".[dashboard]"
 streamlit run dashboard/app.py
 ```
 
-The dashboard is deliberately a placeholder, not a trained fraud classifier.
+The dashboard presents verified research results from checked-in aggregates.
 Docker Compose runs the Phase 3 Spark standalone topology. Phase 1 local CSV profiling is implemented.
 
 ## Research safeguards
@@ -100,7 +100,7 @@ Read [experiment protocol](docs/experiment_protocol.md) and
 | 1 | Local OpenML CSV profiling and exploratory notebook | Implemented; verified-source acceptance job retained |
 | 2 | ML baselines and evaluation | Implemented; research sign-off pending |
 | 3 | Spark ETL and performance study | Implemented; see benchmark protocol and CI evidence |
-| 4 | Streamlit demo and final report | Planned |
+| 4 | Streamlit demo and final report | Implemented; held-out test sealed |
 
 ## Phase 1: Data profiling and notebook
 
@@ -146,3 +146,7 @@ Kernel execution requires local socket support. In restricted environments, `pyt
 ## Phase 3: Spark ETL and performance study
 
 Run the [benchmark protocol](docs/phase_03_benchmark.md) to compare pandas and Spark on verified 1×, 10× and 100× ETL workloads. The [Docker topology](infra/docker/README.md) supports a standalone master and two workers.
+
+## Phase 4: Dashboard and final report
+
+Run `python -m pip install -e ".[dashboard]"` and `python -m streamlit run dashboard/app.py` from the repository root. The demo uses checked-in aggregate evidence. See the [final report and demo walkthrough](docs/phase_04_final_report.md).
