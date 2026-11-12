@@ -1,0 +1,39 @@
+x-spark: &spark
+  image: fraud-bigdata-spark:3.5.8
+  volumes:
+    - ../..:/workspace
+
+services:
+  master:
+    <<: *spark
+    build: .
+    command: ["/usr/local/lib/python3.11/site-packages/pyspark/bin/spark-class",
+              "org.apache.spark.deploy.master.Master", "--host", "master", "--port", "7077"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('master', 7077), 2).close()"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  worker:
+    <<: *spark
+    command: ["/usr/local/lib/python3.11/site-packages/pyspark/bin/spark-class",
+              "org.apache.spark.deploy.worker.Worker", "--cores", "1", "--memory", "1g",
+              "spark://master:7077"]
+    depends_on:
+      master:
+        condition: service_healthy
+    scale: 2
+
+  benchmark:
+    <<: *spark
+    profiles: ["benchmark"]
+    environment:
+      PHASE3_SPARK_DRIVER_HOST: benchmark
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: safe.directory
+      GIT_CONFIG_VALUE_0: /workspace
+    command: ["python", "scripts/phase_03_benchmark.py", "--master", "spark://master:7077",
+              "--output", "artifacts/phase_03/standalone.json"]
+    depends_on:
+      - worker

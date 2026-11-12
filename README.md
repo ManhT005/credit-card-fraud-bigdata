@@ -2,7 +2,7 @@
 
 Reproducible research scaffold for **Apache Spark, imbalanced machine learning, and fraud risk analytics**.
 
-**Current status:** Phase 1 verified-source tooling plus Phase 2 leakage-safe modeling/evaluation. Validation results and proposal require hosted CI and independent peer review; held-out test remains sealed. No Spark benchmark results.
+**Current status:** Phase 1 verified-source tooling plus Phase 2 leakage-safe modeling/evaluation. Validation results and proposal require hosted CI and independent peer review; held-out test remains sealed. Phase 3 adds reproducible pandas and Spark ETL benchmarks.
 
 ## Objectives
 
@@ -37,11 +37,11 @@ Do not commit raw transactions or replicated benchmark data.
 │   ├── features/               # Feature engineering
 │   ├── models/                 # Training methods
 │   ├── evaluation/             # Metrics and thresholds
-│   ├── benchmarks/             # pandas versus Spark
 │   ├── pipelines/              # End-to-end orchestration
 │   └── cli.py
+├── src/fraud_benchmarks/        # pandas versus Spark
 ├── dashboard/                  # Streamlit placeholder
-├── infra/docker/               # Planned Spark cluster
+├── infra/docker/               # Spark standalone cluster
 ├── scripts/                    # Repeatable acceptance entrypoints
 ├── artifacts/                  # Local results, ignored
 ├── reports/                    # Research deliverables
@@ -77,7 +77,7 @@ streamlit run dashboard/app.py
 ```
 
 The dashboard is deliberately a placeholder, not a trained fraud classifier.
-Docker Compose and production ingestion are planned for later phases. Phase 1 local CSV profiling is implemented.
+Docker Compose runs the Phase 3 Spark standalone topology. Phase 1 local CSV profiling is implemented.
 
 ## Research safeguards
 
@@ -99,7 +99,7 @@ Read [experiment protocol](docs/experiment_protocol.md) and
 | 0 | Skeleton, package, smoke tests | Scaffold |
 | 1 | Local OpenML CSV profiling and exploratory notebook | Implemented; verified-source acceptance job retained |
 | 2 | ML baselines and evaluation | Implemented; research sign-off pending |
-| 3 | Spark ETL and performance study | Planned |
+| 3 | Spark ETL and performance study | Implemented; see benchmark protocol and CI evidence |
 | 4 | Streamlit demo and final report | Planned |
 
 ## Phase 1: Data profiling and notebook
@@ -142,3 +142,7 @@ The verified original CSV is required. Primary Time-group split (70/15/15) and i
 Read the [protocol](docs/phase_02_protocol.md), [measured validation results](docs/phase_02_results.md), and [review gate](docs/phase_02_decision.md). Technical CI success does not approve a research champion. Artifacts contain aggregate evidence and no raw transactions, per-row predictions or model binaries.
 
 Kernel execution requires local socket support. In restricted environments, `pytest -m "not notebook"` runs the non-kernel contracts only; it is not full acceptance. Hosted CI runs all tests and original-data notebooks.
+
+## Phase 3: Spark ETL and performance study
+
+Run the [benchmark protocol](docs/phase_03_benchmark.md) to compare pandas and Spark on verified 1×, 10× and 100× ETL workloads. The [Docker topology](infra/docker/README.md) supports a standalone master and two workers.
