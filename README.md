@@ -6,10 +6,10 @@
 
 ## Chạy demo từ bản clone sạch
 
-Cần Git, Python 3.11 (CI dùng 3.11.18) và Internet để cài dependency. Demo dùng JSON có sẵn và chạy trên máy cá nhân sau khi cài.
+Cần Git, Python 3.11 (CI dùng 3.11.18) và Internet để cài dependency. Demo dùng JSON có sẵn và chạy trên máy cá nhân sau khi cài. Lệnh dưới đây lấy bản đang nghiệm thu. Sau khi phát hành, có thể dùng `--branch v1.0.0` để lấy đúng bản release.
 
 ```bash
-git clone --branch develop https://github.com/ManhT005/credit-card-fraud-bigdata.git
+git clone --branch feature/phase-05-final-acceptance-release https://github.com/ManhT005/credit-card-fraud-bigdata.git
 cd credit-card-fraud-bigdata
 python -m venv .venv
 ```
