@@ -1,5 +1,9 @@
 # Báo cáo tổng kết · Phát hiện gian lận thẻ tín dụng
 
+Phạm vi đã kiểm chứng gồm dữ liệu nguồn, kết quả validation và benchmark ETL.
+Kết quả held-out test sẽ được bổ sung sau khi hai reviewer duyệt candidate và
+ngưỡng. [Trạng thái nghiệm thu](release_acceptance.md)
+
 ## Mục tiêu và dữ liệu
 
 Đồ án trả lời hai câu hỏi. Mô hình xếp hạng giao dịch gian lận hiệu quả đến
@@ -45,13 +49,25 @@ schema, danh tính giao dịch, tổng số ca gian lận và phân bố giờ/l
 Dữ liệu nhân bản chỉ dùng để đo ETL. CI kiểm tra Docker với hai worker ở 1×.
 [Báo cáo Phase 3](phase_03_results.md)
 
+## Kết luận thực nghiệm
+
+Trên validation, AP của `xgboost_06` cao hơn `logistic_balanced` khoảng
+0,000506. `logistic_balanced` phát ít hơn 6 cảnh báo sai và bỏ sót thêm 2
+ca gian lận ở ngưỡng F₂ của riêng nó. Chênh lệch AP nhỏ và số ca dương thấp
+làm tăng độ bất định của thứ hạng.
+
+Trong phép đo local, Spark mất khoảng 66% thời gian của pandas ở 10× và
+55% ở 100×. pandas có median thấp hơn ở 1×. Phép thử Docker 1× xác nhận
+luồng chạy hai worker trên cùng host. Hai lượt đo local mỗi quy mô cung cấp
+ước lượng ban đầu về độ biến động. [Quy trình và giới hạn benchmark](phase_03_benchmark.md)
+
 ## Chạy và trình bày demo
 
 Từ thư mục gốc, cài dashboard và chạy ứng dụng.
 
 ```bash
-python -m pip install -e ".[dashboard]"
-python -m streamlit run dashboard/app.py
+python -m pip install -c requirements/dashboard-constraints.txt -e ".[dashboard]"
+python -m streamlit run dashboard/app.py --server.address 127.0.0.1
 ```
 
 1. Mở **Dataset**, chỉ ra tỷ lệ gian lận 0,173% và cách chia theo thời gian.
@@ -66,3 +82,5 @@ ngay sau khi cài dependency. Để tái tạo snapshot Phase 2, tải artifact
 và chạy `python scripts/phase_04_snapshot.py path/to/artifact.zip`.
 Script xác minh SHA-256 và trích các số liệu, đường PR tổng hợp từ validation.
 `reports/phase_03/` chứa các báo cáo benchmark mà dashboard đọc trực tiếp.
+
+[Đối chiếu ZIP nguồn và chạy lại mô hình, ETL](reproducibility.md)

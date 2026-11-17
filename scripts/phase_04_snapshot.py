@@ -27,15 +27,27 @@ def snapshot(archive: Path) -> dict:
             or any(item["test_opened"] for item in (acceptance, proposal, split, experiment))):
         raise ValueError("Expected the validated proposal with its held-out test sealed")
 
+    return {
+        "source": {"run_url": RUN_URL, "archive_sha256": ARCHIVE_SHA256,
+                   "csv_sha256": split["dataset"]["original_csv_sha256"]},
+        **validation_summary(proposal, split, experiment),
+    }
+
+
+def validation_summary(proposal: dict, split: dict, experiment: dict) -> dict:
+    """Extract the public validation fields shared by CI archives and reruns."""
     runs = experiment["runs"]
     selected = next(run for run in runs if run["run_id"] == proposal["run_id"])
-    if (selected["validation_metrics"] != proposal["threshold_policy"]["metrics"]
-            or any(run["evaluation_source"] != "validation" for run in runs)):
+    if (experiment["candidate"] != proposal
+            or selected["validation_metrics"] != proposal["threshold_policy"]["metrics"]
+            or any(item["test_opened"] is not False for item in (proposal, split, experiment))
+            or any(run["evaluation_source"] != "validation" or run["fit_source"] != "train"
+                   or run["test_opened"] is not False for run in runs)
+            or any(split["audit"][key] != 0 for key in
+                   ("row_id_overlap", "exact_record_overlap", "conflicting_feature_groups"))):
         raise ValueError("Expected chronological validation metrics")
     dataset = split["dataset"]
     return {
-        "source": {"run_url": RUN_URL, "archive_sha256": ARCHIVE_SHA256,
-                   "csv_sha256": dataset["original_csv_sha256"]},
         "dataset": {name: dataset[name] for name in ("rows", "class_counts", "duplicate_rows")},
         "partitions": {
             name: {key: part[key] for key in ("rows", "class_counts")}
