@@ -1,0 +1,13 @@
+# CPU-bounded grid fixed before experiments; no adaptive test/validation search.
+threads: 2
+smote:
+  sampling_strategy: 0.1
+  k_neighbors: 5
+isolation_forest: true
+xgboost_grid:
+  - {max_depth: 3, n_estimators: 100}
+  - {max_depth: 3, n_estimators: 200}
+  - {max_depth: 3, n_estimators: 300}
+  - {max_depth: 5, n_estimators: 100}
+  - {max_depth: 5, n_estimators: 200}
+  - {max_depth: 5, n_estimators: 300}
